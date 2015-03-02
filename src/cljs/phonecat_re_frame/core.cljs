@@ -33,6 +33,7 @@
    (reaction (:order-prop @db))))
 
 (re-frame/register-handler
+<<<<<<< HEAD
  :initialise-db             ;; usage: (dispatch [:initialise-db])
  (fn
    [_ _]                   ;; Ignore both params (db and v).
@@ -41,12 +42,22 @@
              {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
     :search-input ""
     :order-prop "name"}))
+=======
+   :initialise-db             ;; usage: (dispatch [:initialise-db])
+   (fn
+     [_ _]                   ;; Ignore both params (db and v).
+     {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
+               {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
+               {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
+      :search-input ""}))
+>>>>>>> 0720b58... add order-by functionality
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
   (assoc-in app-state [:search-input] search-input))
 
 (re-frame/register-handler
+<<<<<<< HEAD
  :search-input-entered
  handle-search-input-entered)
 
