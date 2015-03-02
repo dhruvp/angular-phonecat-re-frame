@@ -11,7 +11,13 @@
 ;; Views
 
 (defn home-page []
-  [:p "Nothing here " (str "yet" "!")])
+  [:ul
+   [:li
+    [:span "Nexus S"]
+    [:p "Fast just got faster with Nexus S."]]
+   [:li
+    [:span "Motorola XOOM with Wi-Fi"]
+    [:p "The Next, Next Generation tablet."]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
