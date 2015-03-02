@@ -23,8 +23,16 @@
      [_ _]                   ;; Ignore both params (db and v).
      {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
                {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
-               {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]}))
+               {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
+      :search-input ""}))
 
+(defn handle-search-input-entered
+  [app-state [_ search-input]]
+  (assoc-in app-state [:search-input] search-input))
+
+(re-frame/register-pure-handler
+ :search-input-entered
+ handle-search-input-entered)
 ;; -------------------------
 ;; Views
 
@@ -34,14 +42,34 @@
    [:span (:name @phone)]
    [:p (:snippet @phone)]])
 
+(defn matches-query?
+  [search-input phone]
+  (if (= "" search-input)
+    true
+    (= (:name phone) search-input)))
+
 (defn phones-component
   []
-  (let [phones (re-frame/subscribe [:phones])]
+  (let [phones (re-frame/subscribe [:phones])
+        search-input (re-frame/subscribe [:search-input])]
     (fn []
-      [:ul (for [phone in @phones] ^{:key phone} [phone-component phone] @phones)])))
+      [:ul {:class= "phones"}
+       (for [phone (filter (partial matches-query? @search-input) @phones)]
+         ^{:key phone} [phone-component (:name phone) (:snippet phone)])])))
+
+(defn search
+  []
+  (let [search-input (re-frame/subscribe [:search-input])])
+  (fn []
+    [:input {:on-change #(re-frame/dispatch [:search-input-entered (-> % .-target .-value)])}]))
 
 (defn home-page []
-  [phones-component])
+  [:div {:class "container-fluid"}
+   [:div {:class "row"}
+    [:div {:class "col-md-2"}
+     [search]]]
+   [:div {:class "col-md-10"}
+    [phones-component]]])
 
 (defn current-page []
   [:div [(session/get :current-page)]])
