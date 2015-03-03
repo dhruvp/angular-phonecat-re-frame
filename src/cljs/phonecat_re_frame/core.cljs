@@ -89,8 +89,10 @@
 
 (defn phone-component
   [phone]
-  [:li
-   [:span (:name phone)]
+  [:li {:class "thumbnail"}
+   [:a {:href (str "#/phones/" (:id phone))}
+    [:img {:src (:imageUrl phone)}]]
+   [:a {:href (str "#/phones/" (:id phone))} (:name phone)]
    [:p (:snippet phone)]])
 
 (defn matches-query?
