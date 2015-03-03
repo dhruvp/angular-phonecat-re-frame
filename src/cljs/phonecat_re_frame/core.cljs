@@ -5,7 +5,8 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [cljsjs.react :as react]
-              [re-frame.core :as re-frame])
+              [re-frame.core :as re-frame]
+              [ajax.core :as ajax])
     (:require-macros [reagent.ratom  :refer [reaction]])
     (:import goog.History))
 
@@ -28,12 +29,35 @@
    (reaction (:order-prop @db))))
 
 (re-frame/register-pure-handler
+ :process-phones-response
+ (fn
+   [app-state [_ response]]
+   (println (first response))
+   (assoc-in app-state [:phones] response)))
+
+(re-frame/register-pure-handler
+ :process-phones-bad-response
+ (fn
+   [app-state [_ response]]
+   (println "Error getting phones" response)
+   app-state))
+
+(re-frame/register-pure-handler
+ :load-phones
+ (fn
+   [app-state _]
+   (ajax/GET "phones/phones.json"
+                  {:handler #(re-frame/dispatch [:process-phones-response %1])
+                   :error-handler #(re-frame/dispatch [:process-phones-bad-response %1])
+                   :response-format :json
+                   :keywords? true})
+   app-state))
+
+(re-frame/register-pure-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
    (fn 
      [_ _]                   ;; Ignore both params (db and v). 
-     {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S." :age 1}
-               {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet." :age 2}
-               {:name "Motorola Xoom" :snippet "The Next, Next Generation tablet." :age 3}]
+     {:phones []
       :search-input ""
       :order-prop "name"}))
 
@@ -142,4 +166,5 @@
 (defn init! []
   (hook-browser-navigation!)
   (re-frame/dispatch [:initialise-db])
+  (re-frame/dispatch [:load-phones])
   (reagent/render-component [current-page] (.getElementById js/document "app")))

@@ -19,7 +19,9 @@
                  [compojure "1.3.2"]
                  [selmer "0.8.0"]
                  [environ "1.0.0"]
-                 [re-frame "0.1.7"]]
+                 [re-frame "0.1.7"]
+                 [cljs-ajax "0.3.10"]]
+
 
   :plugins [
             [lein-cljsbuild "1.0.4"]
