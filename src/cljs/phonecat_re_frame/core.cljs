@@ -142,24 +142,36 @@
   [:div {:class "container-fluid"}
    [:div {:class "row"}
     [:div {:class "col-md-2"}
-     [search-component]]]
-   [:div {:class "row"}
-    [:div {:class "col-md-6"}
-     [order-by-component]]]
-   [:div {:class "row"}
+     [search-component]
+     [order-by-component]]
     [:div {:class "col-md-10"}
      [phones-component]]]])
 
+(defn phone-page [{phone-id :phone-id}]
+  [:div "TBD: detail view for"
+   [:span phone-id]])
+
 (defn current-page []
-  (session/get :current-page))
+  [:div [(session/get :current-page) (session/get :params)]])
 
 ;; -------------------------
 ;; Routes
 (secretary/set-config! :prefix "#")
 
-(secretary/defroute "/" []
+(secretary/defroute "/phones" []
   (session/put! :current-page #'home-page))
 
+(secretary/defroute "/phones/:phone-id" {:as params}
+  (session/put! :current-page #'phone-page)
+  (session/put! :params params))
+
+(defn redirect-to
+  [resource]
+  (secretary/dispatch! resource)
+  (.setToken (History.) resource))
+
+(secretary/defroute "*" []
+  (redirect-to "/phones"))
 
 ;; -------------------------
 ;; History
