@@ -80,10 +80,12 @@
 ;; Views
 
 (defn phone-component
-  [name snippet]
-  [:li
-   [:span name]
-   [:p snippet]])
+  [phone]
+  [:li {:class "thumbnail"}
+   [:a {:href (str "#/phones/" (:id phone))}
+    [:img {:src (:imageUrl phone)}]]
+   [:a {:href (str "#/phones/" (:id phone))} (:name phone)]
+   [:p (:snippet phone)]])
 
 (defn matches-query?
   [search-input phone]
@@ -103,7 +105,7 @@
        (for [phone (->> @phones
                         (filter (partial matches-query? @search-input))
                         (sort-by (keyword @order-prop)))]
-         ^{:key phone} [phone-component (:name phone) (:snippet phone)])])))
+         ^{:key phone} [phone-component phone])])))
 
 (defn search-component
   []
