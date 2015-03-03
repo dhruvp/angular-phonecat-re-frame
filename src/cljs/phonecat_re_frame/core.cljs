@@ -5,7 +5,8 @@
               [goog.events :as events]
               [goog.history.EventType :as EventType]
               [cljsjs.react :as react]
-              [re-frame.core :as re-frame])
+              [re-frame.core :as re-frame]
+              [ajax.core :as ajax])
     (:require-macros [reagent.ratom  :refer [reaction]])
     (:import goog.History))
 
@@ -33,7 +34,6 @@
    (reaction (:order-prop @db))))
 
 (re-frame/register-handler
-<<<<<<< HEAD
  :initialise-db             ;; usage: (dispatch [:initialise-db])
  (fn
    [_ _]                   ;; Ignore both params (db and v).
@@ -42,15 +42,38 @@
              {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
     :search-input ""
     :order-prop "name"}))
-=======
+
+(re-frame/register-pure-handler
+ :process-phones-response
+ (fn
+   [app-state [_ response]]
+   (assoc-in app-state [:phones] response)))
+
+(re-frame/register-pure-handler
+ :process-phones-bad-response
+ (fn
+   [app-state [_ response]]
+   (println "Error getting phones" response)
+   app-state))
+
+(re-frame/register-pure-handler
+ :load-phones
+ (fn
+   [app-state _]
+   (ajax/GET "phones/phones.json"
+                  {:handler #(re-frame/dispatch [:process-phones-response %1])
+                   :error-handler #(re-frame/dispatch [:process-phones-bad-response %1])
+                   :response-format :json
+                   :keywords? true})
+   app-state))
+
+(re-frame/register-pure-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
    (fn
      [_ _]                   ;; Ignore both params (db and v).
-     {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
-               {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
-               {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
-      :search-input ""}))
->>>>>>> 0720b58... add order-by functionality
+     {:phones []
+      :search-input ""
+      :order-prop "name"}))
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
@@ -172,4 +195,5 @@
 (defn init! []
   (hook-browser-navigation!)
   (re-frame/dispatch [:initialise-db])
+  (re-frame/dispatch [:load-phones])
   (reagent/render-component [current-page] (.getElementById js/document "app")))
