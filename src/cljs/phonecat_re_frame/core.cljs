@@ -24,9 +24,16 @@
    (reaction (:phones @db))))  ;; pulls out :phones
 
 (re-frame/register-sub
- :search-input
- (fn [db]
-   (reaction (:search-input @db))))
+ :selected-image-url
+ (fn [db [_ phone-id]]
+   (let [phone (re-frame/subscribe [:phone-query phone-id])
+         phone-details (re-frame/subscribe [:phone-details])
+         images (reaction (:images @phone))]
+     (reaction
+      (if @phone-details
+        (if-let [image-url (:selected-image-url @phone-details)]
+          image-url
+          (first @images)))))))
 
 (re-frame/register-sub
  :phone-details
@@ -48,6 +55,12 @@
  (fn [db [_ phone-id]]
    (let [phone-details-reaction (reaction (:phone-details @db))]
      (reaction ((keyword phone-id) @phone-details-reaction)))))
+
+(re-frame/register-handler
+ :set-image
+ (fn
+   [app-state [_ selected-image-url]]
+   (assoc-in app-state [:phone-details :selected-image-url] selected-image-url)))
 
 (re-frame/register-handler
  :process-phones-response
@@ -215,7 +228,8 @@
   [:ul {:class "phone-thumbs"}
    (for [image (:images @phone)]
      ^{:key image} [:li [:img {:src image
-                               :class "phone"}]])])
+                               :class "phone"
+                               :on-click #(re-frame/dispatch [:set-image image])}]])])
 
 (defn availability
   [availability]
@@ -314,10 +328,11 @@
    [additional-features (reaction (:additionalFeatures @phone))]])
 
 (defn phone-page [{phone-id :phone-id}]
-  (let [phone (re-frame/subscribe [:phone-query phone-id])]
+  (let [phone (re-frame/subscribe [:phone-query phone-id])
+        image-url (re-frame/subscribe [:selected-image-url phone-id])]
     (fn []
       [:div
-       [:img {:src (first (:images @phone))
+       [:img {:src @image-url
               :class "phone"}]
        [:h1 (:name @phone)]
        [:p (:description @phone)]
