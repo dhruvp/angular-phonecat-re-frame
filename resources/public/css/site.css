@@ -41,6 +41,7 @@ img.phone {
   height: 400px;
   width: 400px;
   display: none;
+  border: 1px solid black;
 }
 
 img.phone:first-child {
@@ -54,7 +55,6 @@ ul.phone-thumbs {
 }
 
 ul.phone-thumbs li {
-  border: 1px solid black;
   display: inline-block;
   margin: 1em;
   background-color: white;
