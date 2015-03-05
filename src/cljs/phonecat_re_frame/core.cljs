@@ -24,6 +24,18 @@
    (reaction (:search-input @db))))
 
 (re-frame/register-subs
+ :phone-query
+ (fn [db [_ phone-id]]
+   (let [phone-details-reaction (reaction (:phone-details @db))]
+     (reaction ((fn []
+                  ((keyword phone-id) @phone-details-reaction)))))))
+
+(re-frame/register-subs
+ :phone-details
+ (fn [db]
+   (reaction (:phone-details @db))))
+
+(re-frame/register-subs
  :order-prop
  (fn [db]
    (reaction (:order-prop @db))))
@@ -32,7 +44,6 @@
  :process-phones-response
  (fn
    [app-state [_ response]]
-   (println (first response))
    (assoc-in app-state [:phones] response)))
 
 (re-frame/register-pure-handler
@@ -54,10 +65,35 @@
    app-state))
 
 (re-frame/register-pure-handler
+ :process-phone-detail-response
+ (fn
+   [app-state [_ [phone-id response]]]
+   (assoc-in app-state [:phone-details (keyword phone-id)] response)))
+
+(re-frame/register-pure-handler
+ :process-phone-detail-bad-response
+ (fn
+   [app-state [_ [phone-id response]]]
+   (println "Error getting phone detail for id: " phone-id)
+   (println response)
+   app-state))
+
+(re-frame/register-pure-handler
+ :load-phone-detail
+ (fn
+   [app-state [_ phone-id]]
+   (ajax/GET (str "phones/" phone-id ".json")
+             {:handler #(re-frame/dispatch [:process-phone-detail-response [phone-id %1]])
+              :error-handler #(re-frame/dispatch [:process-phone-detail-bad-response [phone-id %1]])
+              :response-format :json
+              :keywords? true})))
+
+(re-frame/register-pure-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
    (fn 
      [_ _]                   ;; Ignore both params (db and v). 
      {:phones []
+      :phone-details {}
       :search-input ""
       :order-prop "name"}))
 
@@ -139,8 +175,12 @@
      [phones-component]]]])
 
 (defn phone-page [{phone-id :phone-id}]
-  [:div "TBD: detail view for"
-   [:span phone-id]])
+  (let [phone (re-frame/subscribe [:phone-query phone-id])]
+    (fn []
+      [:div
+       [:ul {:class "phone-thumbs"}
+        (for [image (:images @phone)]
+             ^{:key image} [:img {:src image}])]])))
 
 (defn current-page []
   [:div [(session/get :current-page) (session/get :params)]])
@@ -154,7 +194,8 @@
 
 (secretary/defroute "/phones/:phone-id" {:as params}
   (session/put! :current-page #'phone-page)
-  (session/put! :params params))
+  (session/put! :params params)
+  (re-frame/dispatch [:load-phone-detail (:phone-id params)]))
 
 (defn redirect-to
   [resource]
