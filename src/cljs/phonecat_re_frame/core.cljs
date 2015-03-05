@@ -199,7 +199,10 @@
     (map (fn [attribute]
            ^{:key attribute} [:div
                               [:dt (:name attribute)]
-                              [:dd (:value attribute)]])
+                              [:dd (condp = (:value attribute)
+                                     true "\u2713"
+                                     false "\u2718"
+                                     (:value attribute))]])
          attributes-map)]])
 
 (defn thumbnails
@@ -300,6 +303,7 @@
    [storage-and-memory (reaction (:storage @phone))]
    [connectivity (reaction (:connectivity @phone))]
    [android (reaction (:android @phone))]
+;   [size-and-weight (reaction (:sizeAndWeight @phone))]
    [display (reaction (:display @phone))]
    [hardware (reaction (:hardware @phone))]
    [camera (reaction (:camera @phone))]
