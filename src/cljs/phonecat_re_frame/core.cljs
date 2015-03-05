@@ -123,7 +123,14 @@
         [:option (mark-selected {:value "name"} @order-prop "name") "Alphabetical"]
         [:option (mark-selected {:value "age"} @order-prop "age") "Newest"]]])))
 
+(defn phones-component
+  []
+  (let [phones (re-frame/subscribe [:phones])]
+    (fn []
+      [:ul (doall  (map (fn [phone] ^{:key phone} [phone-component (:name phone) (:snippet phone)]) @phones))])))
+
 (defn home-page []
+  [phones-component])
   [:div {:class "container-fluid"}
    [:div {:class "row"}
     [:div {:class "col-md-2"}
