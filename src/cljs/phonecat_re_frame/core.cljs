@@ -175,16 +175,139 @@
     [:div {:class "col-md-10"}
      [phones-component]]]])
 
+(defn current-page []
+  [:div [(session/get :current-page) (session/get :params)]])
+
+;; -------------------------
+;; Phone details views
+
+(defn phone-info-template
+  [section-title attributes-map]
+  [:li
+   [:span section-title]
+   [:dl
+    (map (fn [attribute]
+           ^{:key attribute} [:div
+                              [:dt (:name attribute)]
+                              [:dd (:value attribute)]])
+         attributes-map)]])
+
+(defn thumbnails
+  [phone]
+  [:ul {:class "phone-thumbs"}
+   (for [image (:images @phone)]
+     ^{:key image} [:li [:img {:src image
+                               :class "phone"}]])])
+
+(defn availability
+  [availability]
+  [:li
+   [:span "Availability and Networks"]
+   [:dl
+    [:dt "Availability"]
+    (for [availability @availability]
+      availability)]])
+
+(defn battery
+  [battery]
+  [phone-info-template "Battery" [{:name "Type"
+                                   :value (:type @battery)}
+                                  {:name "Talk Time"
+                                   :value (:talkTime @battery)}
+                                  {:name "Standby time (max)"
+                                   :value (:standbyTime @battery)}]])
+
+(defn storage-and-memory
+  [storage]
+  [phone-info-template "Storage And Memory"  [{:name "RAM"
+                                               :value (:ram @storage)}
+                                              {:name "Internal Storage"
+                                               :value (:flash @storage)}]])
+
+(defn connectivity
+  [connectivity]
+  [phone-info-template "Connectivity" [{:name "Network Support"
+                                        :value (:cell @connectivity)}
+                                       {:name "Wifi"
+                                        :value (:wifi @connectivity)}
+                                       {:name "Bluetooth"
+                                        :value (:bluetooth @connectivity)}]])
+
+(defn android
+  [android]
+  [phone-info-template "Android" [{:name "OS Version"
+                                   :value (:os @android)}
+                                  {:name "UI"
+                                   :value (:ui @android)}]])
+
+(defn size-and-weight
+  [size-and-weight]
+  [phone-info-template "Size And Weight" [{:name "Dimensions"
+                                           :value (:dimensions @size-and-weight)}
+                                          {:name "Weight"
+                                           :value (:weight @size-and-weight)}]])
+
+(defn display
+  [display]
+  [phone-info-template "Display" [{:name "Screen size"
+                                   :value (:screenSize @display)}
+                                  {:name "Screen resolution"
+                                   :value (:screenResolution @display)}
+                                  {:name "Touch screen"
+                                   :value (:touchScreen @display)}]])
+
+(defn hardware
+  [hardware]
+  [phone-info-template "Hardware" [{:name "CPU"
+                                    :value (:cpu @hardware)}
+                                   {:name "USB"
+                                    :value (:usb @hardware)}
+                                   {:name "Audio / headphone jack"
+                                    :value (:audioJack @hardware)}
+                                   {:name "FM Radio"
+                                    :value (:fmRadio @hardware)}
+                                   {:name "Accelerometer"
+                                    :value (:accelerometer @hardware)}]])
+
+(defn camera
+  [camera]
+  [phone-info-template "Camera" [{:name "Primary"
+                                  :value (:primary @camera)}
+                                 {:name "Features"
+                                  :value (clojure.string/join ", " (:features @camera))}]])
+
+(defn additional-features
+  [additional-features]
+  [:li
+   [:span "Additional Features"]
+   [:dd @additional-features]])
+
+(defn specs
+  [phone]
+  [:ul {:class "specs"}
+   [availability (reaction (:availiability @phone))]
+   [battery (reaction (:battery @phone))]
+   [storage-and-memory (reaction (:storage @phone))]
+   [connectivity (reaction (:connectivity @phone))]
+   [android (reaction (:android @phone))]
+;   [size-and-weight (reaction (:sizeAndWeight @phone))]
+   [display (reaction (:display @phone))]
+   [hardware (reaction (:hardware @phone))]
+   [camera (reaction (:camera @phone))]
+   [additional-features (reaction (:additionalFeatures @phone))]
+   ])
+
 (defn phone-page [{phone-id :phone-id}]
   (let [phone (re-frame/subscribe [:phone-query phone-id])]
     (fn []
       [:div
-       [:ul {:class "phone-thumbs"}
-        (for [image (:images @phone)]
-             ^{:key image} [:img {:src image}])]])))
+       [:img {:src (first (:images @phone))
+              :class "phone"}]
+       [:h1 (:name @phone)]
+       [:p (:description @phone)]
+       [thumbnails phone]
+       [specs phone]])))
 
-(defn current-page []
-  [:div [(session/get :current-page) (session/get :params)]])
 
 ;; -------------------------
 ;; Routes
