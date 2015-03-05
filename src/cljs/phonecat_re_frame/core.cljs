@@ -69,14 +69,7 @@
   (fn []
     [:input {:on-change #(re-frame/dispatch [:search-input-entered (-> % .-target .-value)])}]))
 
-(defn phones-component
-  []
-  (let [phones (re-frame/subscribe [:phones])]
-    (fn []
-      [:ul (doall  (map (fn [phone] ^{:key phone} [phone-component (:name phone) (:snippet phone)]) @phones))])))
-
 (defn home-page []
-  [phones-component])
   [:div {:class "container-fluid"}
    [:div {:class "row"}
     [:div {:class "col-md-2"}
@@ -89,7 +82,7 @@
      [phones-component]]]])
 
 (defn current-page []
-  [:div [(session/get :current-page)]])
+  (session/get :current-page))
 
 ;; -------------------------
 ;; Routes
