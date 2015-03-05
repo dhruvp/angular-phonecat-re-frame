@@ -4,7 +4,8 @@
               [secretary.core :as secretary :include-macros true]
               [goog.events :as events]
               [goog.history.EventType :as EventType]
-              [cljsjs.react :as react])
+              [cljsjs.react :as react]
+              [re-frame.core :as re-frame])
     (:import goog.History))
 
 ;; -------------------------
