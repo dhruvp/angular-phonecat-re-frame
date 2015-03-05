@@ -117,8 +117,9 @@
 
 (defn phone-component
   [phone]
-  [:li {:class "thumbnail"}
-   [:a {:href (str "#/phones/" (:id phone))}
+  [:li {:class "thumbnail phone-listing"}
+   [:a {:href (str "#/phones/" (:id phone))
+        :class "thumb"}
     [:img {:src (:imageUrl phone)}]]
    [:a {:href (str "#/phones/" (:id phone))} (:name phone)]
    [:p (:snippet phone)]])
@@ -137,7 +138,7 @@
         search-input (re-frame/subscribe [:search-input])
         order-prop (re-frame/subscribe [:order-prop])]
     (fn []
-      [:ul {:class= "phones"}
+      [:ul {:class "phones"}
        (for [phone (->> @phones
                         (filter (partial matches-query? @search-input))
                         (sort-by (keyword @order-prop)))]
