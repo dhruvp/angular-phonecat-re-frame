@@ -11,11 +11,12 @@
     (:import goog.History))
 
 ;; -------------------------
-;; Re-frame data
+;; Re-frame subscriptions
 
 (re-frame/register-sub        ;; a new subscription handler
  :phones             ;; usage (subscribe [:phones])
  (fn [db]
+   ;; extracts the phones property from the db
    (reaction (:phones @db))))  ;; pulls out :phones
 
 (re-frame/register-sub
@@ -30,10 +31,13 @@
 
 (re-frame/register-sub
  :selected-image-url
- (fn [db [_ phone-id]]
+ (fn
+   ;; extract the selected-image-url from the db. If it's not set return the first image of the current phone under query
+   [db [_ phone-id]]
    (let [phone (re-frame/subscribe [:phone-query phone-id])
          phone-details (re-frame/subscribe [:phone-details])
          images (reaction (:images @phone))]
+     ;; Note how we are sequencing reactions above. Whenever the phone ratom changes the images ratom will change as well
      (reaction
       (if @phone-details
         (if-let [image-url (:selected-image-url @phone-details)]
@@ -57,31 +61,40 @@
 
 (re-frame/register-sub
  :phone-query
- (fn [db [_ phone-id]]
+ (fn
+   ;; get info on the given phone id from the phone-details map
+   [db [_ phone-id]]
    (let [phone-details-reaction (reaction (:phone-details @db))]
      (reaction ((keyword phone-id) @phone-details-reaction)))))
+
+;; -------------------------
+;; Re-frame handlers
 
 (re-frame/register-handler
  :set-image
  (fn
+   ;; take an image url and set it in the db
    [app-state [_ selected-image-url]]
    (assoc-in app-state [:phone-details :selected-image-url] selected-image-url)))
 
 (re-frame/register-handler
  :process-phones-response
  (fn
+   ;; store the response of fetching the phones list in the phones attribute of the db
    [app-state [_ response]]
    (assoc-in app-state [:phones] response)))
 
 (re-frame/register-handler
  :process-phones-bad-response
  (fn
+   ;; log a bad response fetching the phones list
    [app-state [_ response]]
    app-state))
 
 (re-frame/register-handler
  :load-phones
  (fn
+   ;; Fetch the list of phones and process the response
    [app-state _]
    (ajax/GET "phones/phones.json"
                   {:handler #(re-frame/dispatch [:process-phones-response %1])
@@ -107,6 +120,7 @@
 (re-frame/register-handler
  :load-phone-detail
  (fn
+   ;; fetch information for the phone with the given phone-id
    [app-state [_ phone-id]]
    (ajax/GET (str "phones/" phone-id ".json")
              {:handler #(re-frame/dispatch [:process-phone-detail-response phone-id %1])
@@ -170,10 +184,12 @@
 (re-frame/register-handler
  :order-prop-changed
  handle-order-prop-changed)
+
 ;; -------------------------
-;; Views
+;; Phone List View
 
 (defn phone-component
+  "individual phone component in the phoens list view"
   [phone]
   [:li {:class "thumbnail phone-listing"}
    [:a {:href (str "#/phones/" (:id phone))
@@ -183,14 +199,16 @@
    [:p (:snippet phone)]])
 
 (defn matches-query?
- [search-input phone]
- (if (= "" search-input)
-   true
-   (boolean (or
-             (re-find (re-pattern search-input) (:name phone))
-             (re-find (re-pattern search-input) (:snippet phone))))))
+  "checks if the search input matches a name or snippet of the given phone"
+  [search-input phone]
+  (if (= "" search-input)
+    true
+    (boolean (or
+              (re-find (re-pattern search-input) (:name phone))
+              (re-find (re-pattern search-input) (:snippet phone))))))
 
 (defn phones-component
+  "component for the list of phones"
   []
   (let [phones (re-frame/subscribe [:phones])
         search-input (re-frame/subscribe [:search-input])
@@ -203,6 +221,7 @@
          ^{:key (:name phone)} [phone-component phone])])))
 
 (defn search-component
+  "component for the search input"
   []
   (let [search-input (re-frame/subscribe [:search-input])])
   (fn []
@@ -210,12 +229,14 @@
      [:input {:on-change #(re-frame/dispatch [:search-input-entered (-> % .-target .-value)])}]]))
 
 (defn mark-selected
-  [props order-prop current-prop-value]
+  "mark the given select element as selected if the order-prop matches the value of the element passed in"
+  [props order-prop]
   (if (= order-prop current-prop-value)
     (reagent/merge-props props {:selected "selected"})
     props))
 
 (defn order-by-component
+  "component to define how you want to order the phones list"
   []
   (let [order-prop (re-frame/subscribe [:order-prop])]
     (fn []
@@ -224,7 +245,9 @@
         [:option (mark-selected {:value "name"} @order-prop "name") "Alphabetical"]
         [:option (mark-selected {:value "age"} @order-prop "age") "Newest"]]])))
 
-(defn home-page []
+(defn home-page
+  "defines the ome page which will be the phone list component"
+  []
   [:div {:class "container-fluid"}
    [:div {:class "row"}
     [:div {:class "col-md-2"}
@@ -240,6 +263,7 @@
 ;; Phone details views
 
 (defn phone-info-template
+  "template for listing a set of phone attributes"
   [section-title attributes-map]
   [:li
    [:span section-title]
@@ -254,6 +278,7 @@
          attributes-map)]])
 
 (defn thumbnails
+  "component for displaying thumbnails of the phone"
   [phone]
   [:ul {:class "phone-thumbs"}
    (for [image (:images @phone)]
@@ -345,6 +370,7 @@
    [:dd @additional-features]])
 
 (defn specs
+  "component for displaying the specs of the phone"
   [phone]
   [:ul {:class "specs"}
    [availability (reaction (:availiability @phone))]
@@ -357,7 +383,9 @@
    [camera (reaction (:camera @phone))]
    [additional-features (reaction (:additionalFeatures @phone))]])
 
-(defn phone-page [{phone-id :phone-id}]
+(defn phone-page
+  "top level component for the phone page"
+  [{phone-id :phone-id}]
   (let [phone (re-frame/subscribe [:phone-query phone-id])
         image-url (re-frame/subscribe [:selected-image-url phone-id])]
     (fn []
