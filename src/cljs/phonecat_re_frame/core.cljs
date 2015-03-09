@@ -122,12 +122,15 @@
        [:select {:on-change #(re-frame/dispatch [:order-prop-changed (-> % .-target .-value)])}
         [:option (mark-selected {:value "name"} @order-prop "name") "Alphabetical"]
         [:option (mark-selected {:value "age"} @order-prop "age") "Newest"]]])))
+<<<<<<< HEAD
 
 (defn phones-component
   []
   (let [phones (re-frame/subscribe [:phones])]
     (fn []
       [:ul (doall  (map (fn [phone] ^{:key phone} [phone-component (:name phone) (:snippet phone)]) @phones))])))
+=======
+>>>>>>> 010187c... basic clean up
 
 (defn home-page []
   [phones-component])
