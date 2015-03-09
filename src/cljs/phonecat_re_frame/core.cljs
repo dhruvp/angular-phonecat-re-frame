@@ -57,7 +57,7 @@
     (fn []
       [:ul {:class "phones"}
        (for [phone (filter (partial matches-query? @search-input) @phones)]
-         ^{:key phone} [phone-component (:name phone) (:snippet phone)])])))
+         ^{:key phone} [phone-component phone])])))
 
 (defn search
   []
