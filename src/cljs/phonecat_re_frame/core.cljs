@@ -29,16 +29,16 @@
 ;; Views
 
 (defn phone-component
-  [name snippet]
+  [phone]
   [:li
-   [:span name]
-   [:p snippet]])
+   [:span (:name @phone)]
+   [:p (:snippet @phone)]])
 
 (defn phones-component
   []
   (let [phones (re-frame/subscribe [:phones])]
     (fn []
-      [:ul (for [phone in @phones] ^{:key phone} [phone-component (:name phone) (:snippet phone)] @phones)])))
+      [:ul (for [phone in @phones] ^{:key phone} [phone-component phone] @phones)])))
 
 (defn home-page []
   [phones-component])
