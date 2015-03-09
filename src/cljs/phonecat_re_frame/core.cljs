@@ -43,10 +43,12 @@
    [:p (:snippet @phone)]])
 
 (defn matches-query?
-  [search-input phone]
-  (if (= "" search-input)
-    true
-    (= (:name phone) search-input)))
+ [search-input phone]
+ (if (= "" search-input)
+   true
+   (boolean (or
+             (re-find (re-pattern search-input) (:name phone))
+             (re-find (re-pattern search-input) (:snippet phone))))))
 
 (defn phones-component
   []
