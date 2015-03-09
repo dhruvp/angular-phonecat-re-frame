@@ -33,9 +33,6 @@
  (fn [db]
    (reaction (:order-prop @db))))
 
-<<<<<<< HEAD
-(re-frame/register-handler
-=======
 (re-frame/register-subs
  :phone-query
  (fn [db [_ phone-id]]
@@ -43,7 +40,6 @@
      (reaction ((keyword phone-id) @phone-details-reaction)))))
 
 (re-frame/register-pure-handler
->>>>>>> dff3fe5... add back handlers for loading individual phone data
  :process-phones-response
  (fn
    [app-state [_ response]]
