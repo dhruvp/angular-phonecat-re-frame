@@ -37,12 +37,10 @@
 (re-frame/register-handler
 =======
 (re-frame/register-subs
-:phone-query
-(fn [db [_ phone-id]]
-  (let [phone-details-reaction (reaction (:phone-details @db))]
-    (reaction ((fn []
-                 ((keyword phone-id) @phone-details-reaction)))))))
-
+ :phone-query
+ (fn [db [_ phone-id]]
+   (let [phone-details-reaction (reaction (:phone-details @db))]
+     (reaction ((keyword phone-id) @phone-details-reaction)))))
 
 (re-frame/register-pure-handler
 >>>>>>> dff3fe5... add back handlers for loading individual phone data
