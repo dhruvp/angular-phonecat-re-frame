@@ -303,7 +303,6 @@
    [storage-and-memory (reaction (:storage @phone))]
    [connectivity (reaction (:connectivity @phone))]
    [android (reaction (:android @phone))]
-;   [size-and-weight (reaction (:sizeAndWeight @phone))]
    [display (reaction (:display @phone))]
    [hardware (reaction (:hardware @phone))]
    [camera (reaction (:camera @phone))]
