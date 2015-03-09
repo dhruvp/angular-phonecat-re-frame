@@ -38,7 +38,7 @@
   []
   (let [phones (re-frame/subscribe [:phones])]
     (fn []
-      [:ul (doall  (map (fn [phone] ^{:key phone} [phone-component (:name phone) (:snippet phone)]) @phones))])))
+      [:ul (for [phone in @phones] ^{:key phone} [phone-component (:name phone) (:snippet phone)] @phones)])))
 
 (defn home-page []
   [phones-component])
