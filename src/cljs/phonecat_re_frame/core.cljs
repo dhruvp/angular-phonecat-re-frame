@@ -60,14 +60,32 @@
     (fn []
 
       [:ul {:class= "phones"}
-       (for [phone (filter (partial matches-query? @search-input) @phones)]
+       (for [phone (->> @phones
+                        (filter (partial matches-query? @search-input))
+                        (sort-by (keyword @order-prop)))]
          ^{:key (:name phone)} [phone-component phone])])))
 
 (defn search-component
   []
   (let [search-input (re-frame/subscribe [:search-input])])
   (fn []
-    [:input {:on-change #(re-frame/dispatch [:search-input-entered (-> % .-target .-value)])}]))
+    [:div "Search"
+     [:input {:on-change #(re-frame/dispatch [:search-input-entered (-> % .-target .-value)])}]]))
+
+(defn mark-selected
+  [props order-prop current-prop-value]
+  (if (= order-prop current-prop-value)
+    (reagent/merge-props props {:selected "selected"})
+    props))
+
+(defn order-by-component
+  []
+  (let [order-prop (re-frame/subscribe [:order-prop])]
+    (fn []
+      [:div "Sort by: "
+       [:select {:on-change #(re-frame/dispatch [:order-prop-changed (-> % .-target .-value)])}
+        [:option (mark-selected {:value "name"} @order-prop "name") "Alphabetical"]
+        [:option (mark-selected {:value "age"} @order-prop "age") "Newest"]]])))
 
 (defn home-page []
   [:div {:class "container-fluid"}
