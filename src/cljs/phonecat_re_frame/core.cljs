@@ -53,7 +53,7 @@
   (let [phones (re-frame/subscribe [:phones])
         search-input (re-frame/subscribe [:search-input])]
     (fn []
-      [:ul {:class= "phones"}
+      [:ul {:class "phones"}
        (for [phone (filter (partial matches-query? @search-input) @phones)]
          ^{:key phone} [phone-component (:name phone) (:snippet phone)])])))
 
