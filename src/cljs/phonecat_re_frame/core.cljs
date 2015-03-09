@@ -66,30 +66,29 @@
                    :keywords? true})
    app-state))
 
-   (re-frame/register-pure-handler
-    :process-phone-detail-response
-    (fn
-      [app-state [_ [phone-id response]]]
-      (assoc-in app-state [:phone-details (keyword phone-id)] response)))
+(re-frame/register-pure-handler
+ :process-phone-detail-response
+ (fn
+   [app-state [_ [phone-id response]]]
+   (assoc-in app-state [:phone-details (keyword phone-id)] response)))
 
-   (re-frame/register-pure-handler
-    :process-phone-detail-bad-response
-    (fn
-      [app-state [_ [phone-id response]]]
-      (println "Error getting phone detail for id: " phone-id)
-      (println response)
-      app-state))
+(re-frame/register-pure-handler
+ :process-phone-detail-bad-response
+ (fn
+   [app-state [_ [phone-id response]]]
+   (println "Error getting phone detail for id: " phone-id)
+   (println response)
+   app-state))
 
-   (re-frame/register-pure-handler
-    :load-phone-detail
-    (fn
-      [app-state [_ phone-id]]
-      (ajax/GET (str "phones/" phone-id ".json")
-                {:handler #(re-frame/dispatch [:process-phone-detail-response [phone-id %1]])
-                 :error-handler #(re-frame/dispatch [:process-phone-detail-bad-response [phone-id %1]])
-                 :response-format :json
-                 :keywords? true})))
-
+(re-frame/register-pure-handler
+ :load-phone-detail
+ (fn
+   [app-state [_ phone-id]]
+   (ajax/GET (str "phones/" phone-id ".json")
+             {:handler #(re-frame/dispatch [:process-phone-detail-response [phone-id %1]])
+              :error-handler #(re-frame/dispatch [:process-phone-detail-bad-response [phone-id %1]])
+              :response-format :json
+              :keywords? true})))
 
 (re-frame/register-pure-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
