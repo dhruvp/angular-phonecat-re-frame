@@ -230,7 +230,7 @@
 
 (defn mark-selected
   "mark the given select element as selected if the order-prop matches the value of the element passed in"
-  [props order-prop]
+  [props order-prop current-prop-value]
   (if (= order-prop current-prop-value)
     (reagent/merge-props props {:selected "selected"})
     props))
