@@ -217,7 +217,7 @@ We then also create a component for displaying the phones list and have it use t
   []
   (let [phones (re-frame/subscribe [:phones])] ; subscribe to the phones value in our db
     (fn []
-      [:ul (for [phone in @phones] ^{:key phone} [phone-component phone] @phones)])))
+      [:ul (for [phone in @phones] ^{:key (:name phone)} [phone-component phone] @phones)])))
 
 ```
 
@@ -288,7 +288,7 @@ Finally, we update our phones-component to only show phones that match the searc
     (fn []
       [:ul {:class "phones"}
        (for [phone (filter (partial matches-query? @search-input) @phones)]
-         ^{:key phone} [phone-component phone])])))
+         ^{:key (:name phone)} [phone-component phone])])))
 ```
 
 Here, we use Clojure's filter function to just filter our phones vector with the function matches-query?. Note how we don't have to create any messy callbacks or anything. @search-input automatically updates with the new value!
@@ -313,7 +313,7 @@ Step 4 is almost identical in nature to step 3. We are going to store an 'order-
        (for [phone (->> @phones
                         (filter (partial matches-query? @search-input))
                         (sort-by (keyword @order-prop)))]
-         ^{:key phone} [phone-component @phone])])))
+         ^{:key (:name phone)} [phone-component @phone])])))
 ```
 
 So we just subscribe to the order-property and sort our phones list by the order property. Again, very simple clojure syntax. And notice how I don't have to write watches, or run digest cycles etc. My subscription to order-prop will automatically update when order-prop changes and as a result the phones-component will automatically update. This is really cool.
@@ -489,7 +489,7 @@ Looks like all these html components are basically doing the same thing. They ha
    [:span section-title]
    [:dl
     (map (fn [attribute]
-           ^{:key attribute} [:div
+           ^{:key (:name attribute)} [:div
                               [:dt (:name attribute)]
                               [:dd (:value attribute)]])
          attributes-map)]])
