@@ -13,27 +13,21 @@
 ;; -------------------------
 ;; Re-frame data
 
-<<<<<<< HEAD
-=======
 (re-frame/register-sub        ;; a new subscription handler
    :phones             ;; usage (subscribe [:phones])
    (fn [db]
      (reaction (:phones @db))))  ;; pulls out :phones
 
->>>>>>> 14a2a55... bump up to re-frame 0.2.0
 (re-frame/register-sub
  :search-input
  (fn [db]
    (reaction (:search-input @db))))
 
-<<<<<<< HEAD
 (re-frame/register-sub        ;; a new subscription handler
  :phones             ;; usage (subscribe [:phones])
  (fn [db]
    (reaction (:phones @db))))  ;; pulls out :phones
 
-=======
->>>>>>> 14a2a55... bump up to re-frame 0.2.0
 (re-frame/register-sub
  :selected-image-url
  (fn [db [_ phone-id]]
@@ -95,6 +89,29 @@
                    :response-format :json
                    :keywords? true})
    app-state))
+
+(re-frame/register-handler
+ :process-phone-detail-response
+ (fn
+   [app-state [_ [phone-id response]]]
+   (assoc-in app-state [:phone-details (keyword phone-id)] response)))
+
+(re-frame/register-handler
+ :process-phone-detail-bad-response
+ (fn
+   [app-state [_ [phone-id response]]]
+   (println "Error getting phone detail for id: " phone-id)
+   app-state))
+
+(re-frame/register-handler
+ :load-phone-detail
+ (fn
+   [app-state [_ phone-id]]
+   (ajax/GET (str "phones/" phone-id ".json")
+             {:handler #(re-frame/dispatch [:process-phone-detail-response [phone-id %1]])
+              :error-handler #(re-frame/dispatch [:process-phone-detail-bad-response [phone-id %1]])
+              :response-format :json
+              :keywords? true})))
 
 (re-frame/register-handler
  :process-phone-detail-response
