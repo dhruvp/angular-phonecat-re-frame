@@ -19,9 +19,15 @@
    (reaction (:search-input @db))))
 
 (re-frame/register-sub        ;; a new subscription handler
+<<<<<<< HEAD
  :phones             ;; usage (subscribe [:phones])
  (fn [db]
    (reaction (:phones @db))))  ;; pulls out :phones
+=======
+   :phones             ;; usage (subscribe [:phones])
+   (fn [db]
+     (reaction (:phones @db))))  ;; pulls out :phones
+>>>>>>> d540ae1... bump up to reframe 0.2.0
 
 (re-frame/register-sub
  :search-input
@@ -29,6 +35,19 @@
    (reaction (:search-input @db))))
 
 (re-frame/register-sub
+ :phone-query
+ (fn [db [_ phone-id]]
+   (let [phone-details-reaction (reaction (:phone-details @db))]
+     (reaction ((fn []
+                  ((keyword phone-id) @phone-details-reaction)))))))
+
+(re-frame/register-sub
+ :phone-details
+ (fn [db]
+   (reaction (:phone-details @db))))
+
+(re-frame/register-sub
+>>>>>>> d540ae1... bump up to reframe 0.2.0
  :order-prop
  (fn [db]
    (reaction (:order-prop @db))))
