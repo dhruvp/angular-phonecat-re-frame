@@ -43,7 +43,6 @@
  :process-phones-bad-response
  (fn
    [app-state [_ response]]
-   (println "Error getting phones" response)
    app-state))
 
 (re-frame/register-handler
@@ -152,7 +151,7 @@
    [:span phone-id]])
 
 (defn current-page []
-  [:div [(session/get :current-page) (session/get :params)]])
+  [(session/get :current-page) (session/get :params)])
 
 ;; -------------------------
 ;; Routes
