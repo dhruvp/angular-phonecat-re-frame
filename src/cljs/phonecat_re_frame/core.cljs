@@ -34,29 +34,19 @@
    (reaction (:order-prop @db))))
 
 (re-frame/register-handler
- :initialise-db             ;; usage: (dispatch [:initialise-db])
- (fn
-   [_ _]                   ;; Ignore both params (db and v).
-   {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
-             {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
-             {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
-    :search-input ""
-    :order-prop "name"}))
-
-(re-frame/register-pure-handler
  :process-phones-response
  (fn
    [app-state [_ response]]
    (assoc-in app-state [:phones] response)))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :process-phones-bad-response
  (fn
    [app-state [_ response]]
    (println "Error getting phones" response)
    app-state))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :load-phones
  (fn
    [app-state _]
@@ -67,20 +57,19 @@
                    :keywords? true})
    app-state))
 
-(re-frame/register-pure-handler
-   :initialise-db             ;; usage: (dispatch [:initialise-db])
-   (fn
-     [_ _]                   ;; Ignore both params (db and v).
-     {:phones []
-      :search-input ""
-      :order-prop "name"}))
+(re-frame/register-handler
+ :initialise-db             ;; usage: (dispatch [:initialise-db])
+ (fn
+   [_ _]                   ;; Ignore both params (db and v).
+   {:phones []
+    :search-input ""
+    :order-prop "name"}))
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
   (assoc-in app-state [:search-input] search-input))
 
 (re-frame/register-handler
-<<<<<<< HEAD
  :search-input-entered
  handle-search-input-entered)
 
@@ -145,15 +134,6 @@
        [:select {:on-change #(re-frame/dispatch [:order-prop-changed (-> % .-target .-value)])}
         [:option (mark-selected {:value "name"} @order-prop "name") "Alphabetical"]
         [:option (mark-selected {:value "age"} @order-prop "age") "Newest"]]])))
-<<<<<<< HEAD
-
-(defn phones-component
-  []
-  (let [phones (re-frame/subscribe [:phones])]
-    (fn []
-      [:ul (doall  (map (fn [phone] ^{:key phone} [phone-component (:name phone) (:snippet phone)]) @phones))])))
-=======
->>>>>>> 010187c... basic clean up
 
 (defn home-page []
   [phones-component])
