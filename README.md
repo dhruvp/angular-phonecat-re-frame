@@ -191,7 +191,7 @@ At this point, @a-value will be 1. If I update db and print a-value,
 
 (println @a-value)
 ; 3
-{% endhighlight clojure %}
+```
 
 @a-value automatically updates! Under the hood, reaction just creates a callback that fires whenever @db changes. It then sets resets the output of its returned ratom to be the result of calling this callback on the new @db.
 
@@ -480,7 +480,7 @@ Now let's make our individual phone pages actually have something useful! Like e
 ...
 ```
 
-Looks like all these html components are basically doing the same thing. They have a heading in a span tag and a list of attributes. The name of the attributes are in a <dt> tag and the values are in <dd> tags. Let's encapsulate this idea in a template function:
+Looks like all these html components are basically doing the same thing. They have a heading in a span tag and a list of attributes. The name of the attributes are in a \<dt\> tag and the values are in \<dd\> tags. Let's encapsulate this idea in a template function:
 
 ```clojure
 (defn phone-info-template
@@ -495,7 +495,7 @@ Looks like all these html components are basically doing the same thing. They ha
          attributes-map)]])
 ```
 
-In the above function, we created a generic version of just the type of component that we described. We take in a section title and a set of attributes in a hashmap. We place the section title in a span at the top of the component. We then iterate over the attributes and convert them into <dt> and <dd> elements. Neat right? Ok, how do we use it? Let's see an example below:
+In the above function, we created a generic version of just the type of component that we described. We take in a section title and a set of attributes in a hashmap. We place the section title in a span at the top of the component. We then iterate over the attributes and convert them into \<dt\> and \<dd\> elements. Neat right? Ok, how do we use it? Let's see an example below:
 
 ```clojure
 (defn battery
