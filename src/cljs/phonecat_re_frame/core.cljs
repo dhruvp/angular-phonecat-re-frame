@@ -13,16 +13,27 @@
 ;; -------------------------
 ;; Re-frame data
 
+<<<<<<< HEAD
+=======
+(re-frame/register-sub        ;; a new subscription handler
+   :phones             ;; usage (subscribe [:phones])
+   (fn [db]
+     (reaction (:phones @db))))  ;; pulls out :phones
+
+>>>>>>> 14a2a55... bump up to re-frame 0.2.0
 (re-frame/register-sub
  :search-input
  (fn [db]
    (reaction (:search-input @db))))
 
+<<<<<<< HEAD
 (re-frame/register-sub        ;; a new subscription handler
  :phones             ;; usage (subscribe [:phones])
  (fn [db]
    (reaction (:phones @db))))  ;; pulls out :phones
 
+=======
+>>>>>>> 14a2a55... bump up to re-frame 0.2.0
 (re-frame/register-sub
  :selected-image-url
  (fn [db [_ phone-id]]
