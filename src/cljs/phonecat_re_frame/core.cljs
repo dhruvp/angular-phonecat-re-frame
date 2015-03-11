@@ -269,7 +269,7 @@
    [:span section-title]
    [:dl
     (map (fn [attribute]
-           ^{:key attribute} [:div
+           ^{:key (:name attribute)} [:div
                               [:dt (:name attribute)]
                               [:dd (condp = (:value attribute)
                                      true "\u2713"
