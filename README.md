@@ -98,7 +98,7 @@ This translates into the following html:
 </ul>
 ```
 
-So what's going on here? The first element in the vector is just the tag. So [:ul] indicates that we are creating a <ul> element. Next, we can nest elements inside other elements by nesting vectors. So [:ul [:li]] translates to <ul><li></li></ul>. To fill out the body of the element, we just add the body details after the tag name in the vector. So in our example [:span "Nexus S"] gives us <span>Nexus S</span>. Pretty neat right?
+So what's going on here? The first element in the vector is just the tag. So [:ul] indicates that we are creating a \<ul\> element. Next, we can nest elements inside other elements by nesting vectors. So [:ul [:li]] translates to \<ul\>\<li\>\</li\>\</ul\>. To fill out the body of the element, we just add the body details after the tag name in the vector. So in our example [:span "Nexus S"] gives us \<span\>Nexus S\</span\>. Pretty neat right?
 
 The awesome part about this is that our HTML is now a first class data structure that we can compose, return, and apply functions upon. Basically we have way more power over them! You'll see how this will come in handy as we write some basic templating functions in future steps.
 
