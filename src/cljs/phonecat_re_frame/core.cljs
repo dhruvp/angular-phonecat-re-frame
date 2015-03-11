@@ -19,7 +19,6 @@
    (reaction (:search-input @db))))
 
 (re-frame/register-sub        ;; a new subscription handler
-<<<<<<< HEAD
  :phones             ;; usage (subscribe [:phones])
  (fn [db]
    (reaction (:phones @db))))  ;; pulls out :phones
