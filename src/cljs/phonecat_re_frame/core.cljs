@@ -86,13 +86,13 @@
               :response-format :json
               :keywords? true})))
 
-(re-frame/register-pure-handler
-   :initialise-db             ;; usage: (dispatch [:initialise-db])
-   (fn
-     [_ _]                   ;; Ignore both params (db and v).
-     {:phones []
-      :search-input ""
-      :order-prop "name"}))
+(re-frame/register-handler
+ :initialise-db             ;; usage: (dispatch [:initialise-db])
+ (fn
+   [_ _]                   ;; Ignore both params (db and v).
+   {:phones []
+    :search-input ""
+    :order-prop "name"}))
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
