@@ -18,13 +18,13 @@
      (reaction (:phones @db))))  ;; pulls out :phones
 
 (re-frame/register-handler
-   :initialise-db             ;; usage: (dispatch [:initialise-db])
-   (fn
-     [_ _]                   ;; Ignore both params (db and v).
-     {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
-               {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
-               {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
-      :search-input ""}))
+ :initialise-db             ;; usage: (dispatch [:initialise-db])
+ (fn
+   [_ _]                   ;; Ignore both params (db and v).
+   {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
+             {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
+             {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
+    :search-input ""}))
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
@@ -43,12 +43,12 @@
    [:p (:snippet @phone)]])
 
 (defn matches-query?
- [search-input phone]
- (if (= "" search-input)
-   true
-   (boolean (or
-             (re-find (re-pattern search-input) (:name phone))
-             (re-find (re-pattern search-input) (:snippet phone))))))
+  [search-input phone]
+  (if (= "" search-input)
+    true
+    (boolean (or
+              (re-find (re-pattern search-input) (:name phone))
+              (re-find (re-pattern search-input) (:snippet phone))))))
 
 (defn phones-component
   []
