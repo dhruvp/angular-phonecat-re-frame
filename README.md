@@ -12,7 +12,6 @@ Each step of the tutorial is in a different branch of this repository (step-1, s
 
 The relevant code is in src/cljs/phonecat_re_frame/core.cljs
 
-The following blog post walks you through each step: TO BE INSERTED.
 
 ## Diffs ##
 
@@ -26,6 +25,13 @@ The following blog post walks you through each step: TO BE INSERTED.
 * Step 8 and Step 7: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-7...step-8" target="_blank"> Diff </a>
 * Step 9 and Step 8: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-8...step-9" target="_blank"> Diff </a>
 * Step 10 and Step 9: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-9...step-10" target="_blank"> Diff </a>
+
+
+# Writeup #
+
+## Introduction ##
+
+Below, I'm going to walk you through the port of the Angular Phonecat tutorial in <a href="https://github.com/Day8/re-frame" target="_blank">Re-frame</a> - a very simple, yet expressive, library for architecting Single Page Apps in Clojurescript. Rather than discuss why use such a framework, I'll let Mike's excellent [writeup](https://github.com/Day8/re-frame) on the project do the talking. Finished reading it? Okay let's get into building an app with re-frame! We're going to go step by step and mirror the exact steps taken in the official angular [walkthrough](https://docs.angularjs.org/tutorial). As a result, you'll be able to compare each step against its analog in Angular and get a better feel of how these frameworks are different and what their strengths and weaknesses are.
 
 
 ## Step 0 - Setting up ##
