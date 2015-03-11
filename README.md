@@ -114,10 +114,10 @@ Now we are going to change our phones page to use data from a database that we s
 
 In re-frame, we make mutations to our db by creating handlers. A handler is just a function that takes in the current application state and some parameters and returns a new application state. What could be simpler?
 
-We create our handler as an anonymous function and then register it by passing it into re-frame/register-pure-handler (pure handler just indicates that our handler doesn't mutate state).
+We create our handler as an anonymous function and then register it by passing it into re-frame/register-handler. All our handlers are pure functions that don't mutate state. The state mutation is done under the hood by re-frame. That means our core logic is far easier to test and doesn't need to worry about mutability.
 
 ```clojure
-(re-frame/register-pure-handler
+(re-frame/register-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
    (fn
      [db v]                   ;; Ignore both params (db and v).
@@ -151,13 +151,13 @@ This is going to be our flow for ALL events. Dispatch is called with a handler, 
 In Re-frame, we do that through subscriptions, which we use in the following code:
 
 ```clojure
-(re-frame/register-subs        ;; a new subscription handler
+(re-frame/register-sub        ;; a new subscription handler
    :phones             ;; usage (subscribe [:phones])
    (fn [db]
      (reaction (:phones @db))))  ;; pulls out :phones
 ```
 
-Just like register-handler, register-subs takes in two arguments: a name, and a function. The function in this case returns an ratom that represents some part of the data (Don't worry we'll get into ratoms in a sec). We then use this subscription to always get access to the latest value of :phones in our db. We use it as below:
+Just like register-handler, register-sub takes in two arguments: a name, and a function. The function in this case returns an ratom that represents some part of the data (Don't worry we'll get into ratoms in a sec). We then use this subscription to always get access to the latest value of :phones in our db. We use it as below:
 
 ```clojure
 (let [phones (re-frame/subscribe [:phones])]
@@ -240,7 +240,7 @@ As in the previous step, we start by adding in a handler that fires when a user 
 ```
 
 ```clojure
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :search-input-entered
  handle-search-input-entered)
 ```
@@ -250,7 +250,7 @@ As in the previous step, we start by adding in a handler that fires when a user 
 We also create a new subscriber to get the latest search term from the db:
 
 ```clojure
-(re-frame/register-subs
+(re-frame/register-sub
  :search-input
  (fn [db]
    (reaction (:search-input @db))))
