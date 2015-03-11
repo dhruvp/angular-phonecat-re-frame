@@ -12,12 +12,12 @@
 ;; -------------------------
 ;; Re-frame data
 
-(re-frame/register-subs        ;; a new subscription handler
+(re-frame/register-sub        ;; a new subscription handler
    :phones             ;; usage (subscribe [:phones])
    (fn [db]
      (reaction (:phones @db))))  ;; pulls out :phones
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
    (fn
      [_ _]                   ;; Ignore both params (db and v).
