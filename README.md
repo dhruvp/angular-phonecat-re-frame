@@ -65,7 +65,7 @@ Now go ahead and open src/cljs/phonecat_re_frame/core.cljs. This is where our ma
 
 In our first step, we just fill out our home page to show a little information about some phones. If you haven't seen hiccup before this should be a good introduction. Hiccup allows us to define html elements using Clojure vectors. Let's look at an example to understand how it works. In the current step, we added the following Hiccup Vector:
 
-{% highlight clojure %}
+```clojure
 [:ul
  [:li
   [:span "Nexus S"]
@@ -73,11 +73,11 @@ In our first step, we just fill out our home page to show a little information a
  [:li
   [:span "Motorola XOOM with Wi-Fi"]
   [:p "The Next, Next Generation tablet."]]]
-{% endhighlight %}
+```
 
 This translates into the following html:
 
-{% highlight html %}
+```html
 <ul>
   <li>
     <span>"Nexus S"</span>
@@ -88,7 +88,7 @@ This translates into the following html:
     <p>"The Next, Next Generation tablet."</p>
   </li>
 </ul>
-{% endhighlight %}
+```
 
 So what's going on here? The first element in the vector is just the tag. So [:ul] indicates that we are creating a <ul> element. Next, we can nest elements inside other elements by nesting vectors. So [:ul [:li]] translates to <ul><li></li></ul>. To fill out the body of the element, we just add the body details after the tag name in the vector. So in our example [:span "Nexus S"] gives us <span>Nexus S</span>. Pretty neat right?
 
@@ -108,7 +108,7 @@ In re-frame, we make mutations to our db by creating handlers. A handler is just
 
 We create our handler as an anonymous function and then register it by passing it into re-frame/register-pure-handler (pure handler just indicates that our handler doesn't mutate state).
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-pure-handler
    :initialise-db             ;; usage: (dispatch [:initialise-db])
    (fn
@@ -116,7 +116,7 @@ We create our handler as an anonymous function and then register it by passing i
      {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
                {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
                {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]}))
-{% endhighlight %}
+```
 
 So above, we initialize our db as a hashmap with a key :phones and a corresponding value.
 
@@ -126,9 +126,9 @@ In the above declaration, we have also given our handler a name :initialise-db t
 
 Now that we've created our handler, how do we call it? That's done in this little bit:
 
-{% highlight clojure %}
+```clojure
 (re-frame/dispatch [:initialise-db])
-{% endhighlight %}
+```
 
 We call handlers by calling the re-frame dispatch function with the name of our handler. So in summary, here's the process of what's going on:
 
@@ -142,42 +142,42 @@ This is going to be our flow for ALL events. Dispatch is called with a handler, 
 
 In Re-frame, we do that through subscriptions, which we use in the following code:
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-subs        ;; a new subscription handler
    :phones             ;; usage (subscribe [:phones])
    (fn [db]
      (reaction (:phones @db))))  ;; pulls out :phones
-{% endhighlight %}
+```
 
 Just like register-handler, register-subs takes in two arguments: a name, and a function. The function in this case returns an ratom that represents some part of the data (Don't worry we'll get into ratoms in a sec). We then use this subscription to always get access to the latest value of :phones in our db. We use it as below:
 
-{% highlight clojure %}
+```clojure
 (let [phones (re-frame/subscribe [:phones])]
-{% endhighlight %}
+```
 
 Now, whenever we call @phones, we will always have the latest value of phones in our database. The beautiful part about this is that @phones will automatically update when the underlying value gets changed in our database. Wow! That to me is pretty sick. Ok but what's the dark magic going on here?
 
 Our subscriber function,
 
-{% highlight clojure %}
+```clojure
 
 (fn [db]
   (reaction (:phones @db))))  ;; pulls out :phones
 
-{% endhighlight %}
+```
 
 returns an ratom representing the latest value of :phones in our app database. This is achieved through using Reagent's reaction function. Reaction takes in a function that depends on an ratom, and returns another ratom. Now whenever the value of the ratom we depend on changes, @db in this case, the function is recomputed and the value of the ratom that reaction returns updates also. So say I had the following:
 
-{% highlight clojure %}
+```clojure
 
 (def db (ratom {:a 1}))
 (def a-value (reaction (:a @db)))
 
-{% endhighlight %}
+```
 
 At this point, @a-value will be 1. If I update db and print a-value,
 
-{% highlight clojure %}
+```clojure
 
 (assoc db [:a] 3)
 
@@ -191,7 +191,7 @@ At this point, @a-value will be 1. If I update db and print a-value,
 
 We've also updated our view layer in a few important ways. First, we've created a separate function that is responsible for displaying each individual phone item. We see it here:
 
-{% highlight clojure %}
+```clojure
 
 (defn phone-component
   [phone]
@@ -199,19 +199,19 @@ We've also updated our view layer in a few important ways. First, we've created 
    [:span (:name @phone)]
    [:p (:snippet @phone)]])
 
-{% endhighlight %}
+```
 
 Check out how freaking easy it is to create separate view components! This component just takes in a phone ratom and displays its name and snippet. Simple.
 We then also create a component for displaying the phones list and have it use the phone-component we defined above:
 
-{% highlight clojure %}
+```clojure
 (defn phones-component
   []
   (let [phones (re-frame/subscribe [:phones])] ; subscribe to the phones value in our db
     (fn []
       [:ul (for [phone in @phones] ^{:key phone} [phone-component phone] @phones)])))
 
-{% endhighlight %}
+```
 
 In the above snippet we first subscribe to the phones value in our db. Then, we use the power of hiccup to iterate over each phone in our database (for [phone in @phones]) and display a separate phone-component for it. We use the phone-component function by calling [phone-component phone]. To understand how this works see Mike Thompson's awesome explanation of Reagent components [here](https://github.com/Day8/re-frame/wiki/Creating-Reagent-Components). Note how we don't need to use any new templating language - we just use clojurescript!
 
@@ -225,46 +225,46 @@ Now let's add a little search box that allows us to search for phones and just d
 
 As in the previous step, we start by adding in a handler that fires when a user types something into the search box. This handler will update our app data with the new search term.
 
-{% highlight clojure %}
+```clojure
 (defn handle-search-input-entered
   [app-state [_ search-input]]
   (assoc-in app-state [:search-input] search-input))
-{% endhighlight %}
+```
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-pure-handler
  :search-input-entered
  handle-search-input-entered)
-{% endhighlight %}
+```
 
 #### Subscribers ####
 
 We also create a new subscriber to get the latest search term from the db:
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-subs
  :search-input
  (fn [db]
    (reaction (:search-input @db))))
-{% endhighlight %}
+```
 
 #### View Layer ####
 
 Next, we create a simple search component that calls our new handler whenever the user types something in:
 
-{% highlight clojure %}
+```clojure
 (defn search
   []
   (let [search-input (re-frame/subscribe [:search-input])])
   (fn []
     [:input {:on-change #(re-frame/dispatch [:search-input-entered (-> % .-target .-value)])}]))
-{% endhighlight %}
+```
 
 Note how we are passing a value into our handler function by giving dispatch a vector of two items: the first is the name of the handler, the next is the additional argument to that handler.
 
 Finally, we update our phones-component to only show phones that match the search term in some way:
 
-{% highlight clojure %}
+```clojure
 (defn matches-query?
  [search-input phone]
  (if (= "" search-input)
@@ -281,7 +281,7 @@ Finally, we update our phones-component to only show phones that match the searc
       [:ul {:class "phones"}
        (for [phone (filter (partial matches-query? @search-input) @phones)]
          ^{:key phone} [phone-component phone])])))
-{% endhighlight %}
+```
 
 Here, we use Clojure's filter function to just filter our phones vector with the function matches-query?. Note how we don't have to create any messy callbacks or anything. @search-input automatically updates with the new value!
 
@@ -294,7 +294,7 @@ matches-query just uses a regexp to check if the search term is present in the n
 
 Step 4 is almost identical in nature to step 3. We are going to store an 'order-prop' property in our app-db and use it to sort the phones in the list. In the view layer, we simply create an order-by component that will allow users to select how they want their list to be ordered. To actually get the ordering to be used, we change this pieces of the phones-component:
 
-{% highlight clojure %}
+```clojure
 (defn phones-component
   []
   (let [phones (re-frame/subscribe [:phones])
@@ -306,7 +306,7 @@ Step 4 is almost identical in nature to step 3. We are going to store an 'order-
                         (filter (partial matches-query? @search-input))
                         (sort-by (keyword @order-prop)))]
          ^{:key phone} [phone-component @phone])])))
-{% endhighlight %}
+```
 
 So we just subscribe to the order-property and sort our phones list by the order property. Again, very simple clojure syntax. And notice how I don't have to write watches, or run digest cycles etc. My subscription to order-prop will automatically update when order-prop changes and as a result the phones-component will automatically update. This is really cool.
 
@@ -314,13 +314,13 @@ So we just subscribe to the order-property and sort our phones list by the order
 
 Now, we are going to do away with the mock phones data and load it in via ajax. To do so, we start by dispatching a call to make the ajax request on page load:
 
-{% highlight clojure %}
+```clojure
 (re-frame/dispatch [:load-phones])
-{% endhighlight %}
+```
 
 We then create a handler to process this response. Our handler will simple make the Ajax calls and make a call out to dispatch to process their responses. Here's what the handler will be:
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-handler
  :load-phones
  (fn
@@ -331,13 +331,13 @@ We then create a handler to process this response. Our handler will simple make 
                    :response-format :json
                    :keywords? true})
    app-state))
-{% endhighlight %}
+```
 
 Notice how we are passing in the response as an argument to the handler by making it the second item of the vector in [:process-phones-response %1].
 
 Let's now write handlers for processing the ajax request responses:
 
-{% highlight clojure %}
+```clojure
 
 (re-frame/register-handler
  :process-phones-response
@@ -351,7 +351,7 @@ Let's now write handlers for processing the ajax request responses:
    [app-state [_ response]]
    (println "Error getting phones" response)
    app-state))
-{% endhighlight %}
+```
 
 Let's focus on the success response handler. We take in the response handler by destructuring the second argument passed in. If you're curious, the second argument to all handlers is the exact vector you pass in to dispatch. So in this case, it is just a vector of two elements: [:process-phones-response response]. We use our response to create a new app-state with the response as the new value for phones. Watch how when this updates, everything in our view will auto-update as well! Under the hood, what happens is that all subscribers depending on app-db are recomputed and all views that have dependencies on these subscribers are re-rendered if their subscriber values changed.
 
@@ -359,7 +359,7 @@ Let's focus on the success response handler. We take in the response handler by 
 
 We are now going to add simple thumbnails to our phone component. In the angular version of this example, this is an introduction to ng-src so you know how to insert data into image links. For us, we don't have to worry about learning anything new! We just again use basic clojure syntax to place the data from phones.json as the src for the image. We do so below:
 
-{% highlight clojure %}
+```clojure
 (defn phone-component
   [phone]
   [:li {:class "thumbnail phone-listing"}
@@ -368,7 +368,7 @@ We are now going to add simple thumbnails to our phone component. In the angular
     [:img {:src (:imageUrl phone)}]]
    [:a {:href (str "#/phones/" (:id phone))} (:name phone)]
    [:p (:snippet phone)]])
-{% endhighlight %}
+```
 
 This again may not seem like a big deal but it's an example of how we have to learn far fewer things to get up and running with this framework. The incidental complexity is minimal.
 
@@ -378,52 +378,52 @@ This step is a little more tricky than the others but still not too difficult. O
 
 For now, let's call this the phone-page:
 
-{% highlight clojure %}
+```clojure
 (defn phone-page [{phone-id :phone-id}]
   [:div "TBD: detail view for"
    [:span phone-id]])
-{% endhighlight %}
+```
 
 Now let's get out routes to point to this page. We use the <a href="https://github.com/gf3/secretary" target="_blank">Secretary</a> library to do this (unlike Angular, re-frame attempts to do as little as possible so it doesn't give you routing etc.). We configure our routing by creating a new route via secretary/defroute!:
 
-{% highlight clojure %}
+```clojure
 (secretary/defroute "/phones/:phone-id" {:as params}
   (session/put! :current-page #'phone-page)
   (session/put! :params params))
-{% endhighlight %}
+```
 
 In the above snippet, we declare that when the route matches "/phones/:phone-id", we set the current-page component to be phone-page. Additionally, notice how we are collecting the phone-id of the route. We destructure the phone-id in the url with the statement {:as params} and then store it for future use via (session/put! :params params). So where do we use these params? When we render the current-page of course!
 
 This is what current-page is now going to look like:
 
-{% highlight clojure %}
+```clojure
 (defn current-page []
   [(session/get :current-page) (session/get :params)])
-{% endhighlight %}
+```
 
 This just calls the component that :current-page points to with :params as the argument. So when you hit the url /phones/:phone-id, it just calls following component:
 
-{% highlight clojure %}
+```clojure
 (defn phone-page [{phone-id :phone-id}]
   [:div "TBD: detail view for"
    [:span phone-id]])
-{% endhighlight %}
+```
 
 How do we actually get the phone-id of the url? We just extract it from the params argument passed in via argument destructuring - [{phone-id :phone-id}]. Great! This should give us the scaffolding we need for pages for each phone. Let's also just make sure that we catch all other urls and send them to the phones-list view.
 
-{% highlight clojure %}
+```clojure
 (secretary/defroute "*" []
   (redirect-to "/phones"))
-{% endhighlight %}
+```
 
 What is redirect? It is a little helper function we define below:
 
-{% highlight clojure %}
+```clojure
 (defn redirect-to
   [resource]
   (secretary/dispatch! resource)
   (.setToken (History.) resource))
-{% endhighlight %}
+```
 This tells secretary to load up the route referring to resource. More interestingly, the next line, (.setToken (History.) resource) uses Google's Closure library to reset the url displayed in the browser to be the resource we pass in.
 
 And with that we should have new pages set up!
@@ -432,7 +432,7 @@ And with that we should have new pages set up!
 
 Now let's make our individual phone pages actually have something useful! Like earlier, we create ajax calls to load the phone info for the resource. That code should be very familiar from Step 5. Instead, let's focus on how we achieve some cool templating using reagent in this step. If you look at the angular html, you'll notice a ton of repetition:
 
-{% highlight html %}
+```html
 <li>
   <span>Battery</span>
   <dl>
@@ -470,11 +470,11 @@ Now let's make our individual phone pages actually have something useful! Like e
 </li>
 <li>
 ...
-{% endhighlight %}
+```
 
 Looks like all these html components are basically doing the same thing. They have a heading in a span tag and a list of attributes. The name of the attributes are in a <dt> tag and the values are in <dd> tags. Let's encapsulate this idea in a template function:
 
-{% highlight clojure %}
+```clojure
 (defn phone-info-template
   [section-title attributes-map]
   [:li
@@ -485,11 +485,11 @@ Looks like all these html components are basically doing the same thing. They ha
                               [:dt (:name attribute)]
                               [:dd (:value attribute)]])
          attributes-map)]])
-{% endhighlight %}
+```
 
 In the above function, we created a generic version of just the type of component that we described. We take in a section title and a set of attributes in a hashmap. We place the section title in a span at the top of the component. We then iterate over the attributes and convert them into <dt> and <dd> elements. Neat right? Ok, how do we use it? Let's see an example below:
 
-{% highlight clojure %}
+```clojure
 (defn battery
   [battery]
   [phone-info-template "Battery" [{:name "Type"
@@ -498,23 +498,23 @@ In the above function, we created a generic version of just the type of componen
                                    :value (:talkTime @battery)}
                                   {:name "Standby time (max)"
                                    :value (:standbyTime @battery)}]])
-{% endhighlight %}
+```
 So this battery component just calls phone-info template with the section title set to "Battery" and a set of custom attributes. We can make a nearly identical one for storage:
 
-{% highlight clojure %}
+```clojure
 (defn storage-and-memory
   [storage]
   [phone-info-template "Storage And Memory"  [{:name "RAM"
                                                :value (:ram @storage)}
                                               {:name "Internal Storage"
                                                :value (:flash @storage)}]])
-{% endhighlight %}
+```
 
 If you're from the Angular world you're probably thinking - hey I can just make an isolate scoped directive and achieve the same thing. This is totally true. But I do think it's a lot simpler to achieve the same logic here. Creating the template is just writing a function - no need for all the boilerplate that comes with defining a directive. And calling it is just as easy. In this way, I think the reagent + re-frame framework encourages modularity and code reuse more pronouncedly than Angular in its current state does.
 
 Let's now see how these components are used in the top level phone-component.
 
-{% highlight clojure %}
+```clojure
 (defn specs
   [phone]
   [:ul {:class "specs"}
@@ -538,19 +538,19 @@ Let's now see how these components are used in the top level phone-component.
        [:p (:description @phone)]
        [thumbnails phone]
        [specs phone]])))
-{% endhighlight %}
+```
 
 Check out how specs just calls each of the individual template components we defined. It's very easy to tell that specs is just composing a bunch of smaller components. Turning our attention to the phone-page component, we see that it creates a subscription to a phone here:   (let [phone (re-frame/subscribe [:phone-query phone-id])]. This shows how you can pass in parameters to a subscribe call. In this case, we are passing in a phone-id to re-frame/subscribe to only subscribe to updates for a given phone. We then just pass that phone into the other subcomponents that will update on changes to the phone.
 
 Let's check out what the subscription function phone-query looks like that we used in the above phone component:
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-sub
  :phone-query
  (fn [db [_ phone-id]]
    (let [phone-details-reaction (reaction (:phone-details @db))]
      (reaction ((keyword phone-id) @phone-details-reaction)))))
-{% endhighlight %}
+```
 
 Here, we take in a phone-id and just get the value associated with that phone-id in the phone-details map in our db. Notice how we are chaining reactions here. The first reaction updates the value of phone-details-reaction whenever the underlying app-db changes. The next reaction just regets the value associated with the phone-id keyword in phone-details whenever phone-details changes. In this way, we are allowing changes from the central app-db to flow throughout our system.
 
@@ -562,22 +562,22 @@ The great thing about re-frame is that calculating such materialized views is ab
 ## Step 9 - Adding in checkmarks instead of booleans ##
 This step is again an example of how re-frame has very little incidental complexity. In the Angular example, the goal here is to create a filter that converts a boolean into a checkmark as follows:
 
-{% highlight javascript %}
+```javascript
 angular.module('phonecatFilters', []).filter('checkmark', function() {
   return function(input) {
     return input ? '\u2713' : '\u2718';
   };
 });
-{% endhighlight %}
+```
 
 In our setup, we don't have to deal with any new concepts just to apply some boolean logic on an item in the view. We achieve the same thing with the following Clojure code:
 
-{% highlight clojure %}
+```clojure
 [:dd (condp = (:value attribute)
        true "\u2713"
        false "\u2718"
        (:value attribute))]])
-{% endhighlight %}
+```
 
 This logic does the following. It checks the value of the attribute - if it's true, it display the checkmark '\u2713', if it's false it display a cross '\u2718'. Otherwise, it just displays the value as it is. While this isn't especially less verbose I like how I don't have to learn any new ideas to implement it - just Clojure!
 
@@ -587,7 +587,7 @@ In this final step, we are going to update the main thumbnail displayed in the p
 ### Dispatch ###
 
 We call dispatch by adding an on-click handler to an image as shown below:
-{% highlight clojure %}
+```clojure
 
 (defn thumbnails
   [phone]
@@ -596,25 +596,25 @@ We call dispatch by adding an on-click handler to an image as shown below:
      ^{:key image} [:li [:img {:src image
                                :class "phone"
                                :on-click #(re-frame/dispatch [:set-image image])}]])])
-{% endhighlight %}
+```
 
 ### Handler ###
 
 We then create a simple handler to fold this data into our app-db.
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-handler
  :set-image
  (fn
    [app-state [_ selected-image-url]]
    (assoc-in app-state [:phone-details :selected-image-url] selected-image-url)))
-{% endhighlight %}
+```
 
 ### Subscription ###
 
 Next we create a subscription to get the selected image as it's updated:
 
-{% highlight clojure %}
+```clojure
 (re-frame/register-sub
  :selected-image-url
  (fn [db [_ phone-id]]
@@ -626,21 +626,21 @@ Next we create a subscription to get the selected image as it's updated:
         (if-let [image-url (:selected-image-url @phone-details)]
           image-url
           (first @images)))))))
-{% endhighlight %}
+```
 
 Ok this looks a bit more involved right? Let's break down what's going on. At its core, this function just returns the :selected-image-url attribute of :phone-details in our app-db. If this is not set, it instead just returns the first image of the phone we are interested in.
 
 This logic is achieved very simply in the following if-let statement:
-{% highlight clojure %}
+```clojure
 (if-let [image-url (:selected-image-url @phone-details)]
   image-url
   (first @images))
-{% endhighlight %}
+```
 But how do we know what @images and @phone-details are? We just get those via subscribe calls as defined in the let statement. Cool! This way they auto-update as we desire.
 
 Finally, to get our phone-page to display this selected image, we add a simple subscriber and call it in our view:
 
-{% highlight clojure %}
+```clojure
 
 (defn phone-page [{phone-id :phone-id}]
   (let [phone (re-frame/subscribe [:phone-query phone-id])
@@ -654,7 +654,7 @@ Finally, to get our phone-page to display this selected image, we add a simple s
        [thumbnails phone]
        [specs phone]])))
 
-{% endhighlight %}
+```
 
 We get the image above and store it in image-url. We then simply display it and we're done!
 There's no doubt this logic is simpler in angular. You just add an ng-click and have it reset the a scope variable. You then bind that scope variable to be the source of the image you have. But what happens when the phone images suddenly change for some reason? Basically when asynchronous data comes in, this model becomes far harder to work with and re-frame shines.
