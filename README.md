@@ -26,6 +26,8 @@ The following blog post walks you through each step: TO BE INSERTED.
 * Step 8 and Step 7: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-7...step-8" target="_blank"> Diff </a>
 * Step 9 and Step 8: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-8...step-9" target="_blank"> Diff </a>
 * Step 10 and Step 9: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-9...step-10" target="_blank"> Diff </a>
+
+
 ## Step 0 - Setting up ##
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/tree/step-0" target="_blank">Diff</a>###
