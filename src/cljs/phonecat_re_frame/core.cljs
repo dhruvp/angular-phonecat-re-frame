@@ -22,14 +22,24 @@
  (fn [db]
    (reaction (:phones @db))))  ;; pulls out :phones
 
+(re-frame/register-sub
+ :search-input
+ (fn [db]
+   (reaction (:search-input @db))))
+
+(re-frame/register-sub
+ :order-prop
+ (fn [db]
+   (reaction (:order-prop @db))))
+
 (re-frame/register-handler
-   :initialise-db             ;; usage: (dispatch [:initialise-db])
-   (fn
-     [_ _]                   ;; Ignore both params (db and v).
-     {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
-               {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
-               {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
-      :search-input ""}))
+ :initialise-db             ;; usage: (dispatch [:initialise-db])
+ (fn
+   [_ _]                   ;; Ignore both params (db and v).
+   {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
+             {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
+             {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
+    :search-input ""}))
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
@@ -38,6 +48,18 @@
 (re-frame/register-handler
  :search-input-entered
  handle-search-input-entered)
+
+(defn handle-order-prop-changed
+  [app-state [_ order-prop]]
+  (assoc-in app-state [:order-prop] order-prop))
+
+(re-frame/register-handler
+ :search-input-entered
+ handle-search-input-entered)
+
+(re-frame/register-handler
+ :order-prop-changed
+ handle-order-prop-changed)
 ;; -------------------------
 ;; Views
 
