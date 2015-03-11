@@ -187,7 +187,7 @@ At this point, @a-value will be 1. If I update db and print a-value,
 
 ```clojure
 
-(assoc db [:a] 3)
+(swap! db assoc-in [:a] 3)
 
 (println @a-value)
 ; 3
