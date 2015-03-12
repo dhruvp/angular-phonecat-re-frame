@@ -518,7 +518,7 @@ So this battery component just calls phone-info template with the section title 
                                                :value (:flash @storage)}]])
 ```
 
-If you're from the Angular world you're probably thinking - hey I can just make an isolate scoped directive and achieve the same thing. This is totally true. But I do think it's a lot simpler to achieve the same logic here. Creating the template is just writing a function - no need for all the boilerplate that comes with defining a directive. And calling it is just as easy. In this way, I think the reagent + re-frame framework encourages modularity and code reuse more pronouncedly than Angular in its current state does.
+If you're from the Angular world you're probably thinking - hey I can just make an isolate scoped directive and achieve the same thing. This is totally true. But I do think it's a lot simpler to achieve the same logic here. Creating the template is just writing a function - no need for all the boilerplate that comes with defining a directive. And calling it is just as easy. In this way,  reagent + re-frame framework encourages modularity and code reuse more pronouncedly than Angular in its current state does.
 
 Let's now see how these components are used in the top level phone-component.
 
@@ -562,9 +562,9 @@ Let's check out what the subscription function phone-query looks like that we us
 
 Here, we take in a phone-id and just get the value associated with that phone-id in the phone-details map in our db. Notice how we are chaining reactions here. The first reaction updates the value of phone-details-reaction whenever the underlying app-db changes. The next reaction just regets the value associated with the phone-id keyword in phone-details whenever phone-details changes. In this way, we are allowing changes from the central app-db to flow throughout our system.
 
-What's even cooler about the above subscription is that it's an example of how you can keep non-trivial <a href="http://en.wikipedia.org/wiki/Materialized_view" target="_blank">materialized views</a> in your app that auto-update. Why is this useful? Say we go back to our list of phones view and we want to always show the user the number of unique brands available in the list. This is a nontrivial computation - we have to go through all the phones and see which ones are from different brands. In Angular, I would achieve this by creating a watch on the list of phones that runs on every digest and then computes this list of uniques whenever the list of phones changes. The problem is watching objects sucks as it is an expensive computation that runs on every digest cycle potentially! Alternatively, whenever I update my list of phones, I can have it emit a message and listen for that message to recalculate the new materialized view. This again is non ideal as I have to start worrying about an eventing system and remembering to remove event listeners to prevent memory leaks etc.
+What's even cooler about the above subscription is that it's an example of how you can keep non-trivial <a href="http://en.wikipedia.org/wiki/Materialized_view" target="_blank">materialized views</a> in your app that auto-update. Why is this useful? Say we go back to our list of phones view and we want to always show the user the number of unique brands available in the list. This is a nontrivial computation - we have to go through all the phones and see which ones are from different brands.
 
-The great thing about re-frame is that calculating such materialized views is absolutely trivial for me, and allows me to just focus on the query and not how to keep the query up to date.
+The great thing about re-frame is that calculating such materialized views is absolutely trivial for us, and allows us to just focus on the query and not how to keep the query up to date.
 
 
 ## Step 9 - Adding in checkmarks instead of booleans ##
@@ -665,4 +665,4 @@ Finally, to get our phone-page to display this selected image, we add a simple s
 ```
 
 We get the image above and store it in image-url. We then simply display it and we're done!
-There's no doubt this logic is simpler in angular. You just add an ng-click and have it reset the a scope variable. You then bind that scope variable to be the source of the image you have. But what happens when the phone images suddenly change for some reason? Basically when asynchronous data comes in, this model becomes far harder to work with and re-frame shines.
+There's no doubt this logic is simpler in angular. You just add an ng-click and have it reset the a scope variable. You then bind that scope variable to be the source of the image you have. But what happens when the phone images suddenly change for some reason? Basically when asynchronous streaming data comes in, re-frame becomes far more valuable.
