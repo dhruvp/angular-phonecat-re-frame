@@ -13,9 +13,9 @@
 ;; Re-frame data
 
 (re-frame/register-sub
-  :search-input
-  (fn [db]
-    (reaction (:search-input @db))))
+ :search-input
+ (fn [db]
+   (reaction (:search-input @db))))
 
 (re-frame/register-sub        ;; a new subscription handler
  :phones             ;; usage (subscribe [:phones])
@@ -44,8 +44,8 @@
 (defn phone-component
   [phone]
   [:li
-   [:span (:name @phone)]
-   [:p (:snippet @phone)]])
+   [:span (:name phone)]
+   [:p (:snippet phone)]])
 
 (defn matches-query?
   [search-input phone]
@@ -62,7 +62,7 @@
     (fn []
       [:ul {:class "phones"}
        (for [phone (filter (partial matches-query? @search-input) @phones)]
-         ^{:key phone} [phone-component phone])])))
+         ^{:key (:name phone)} [phone-component phone])])))
 
 (defn search-component
   []
