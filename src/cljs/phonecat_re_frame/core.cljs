@@ -39,7 +39,7 @@
    (let [phone-details-reaction (reaction (:phone-details @db))]
      (reaction ((keyword phone-id) @phone-details-reaction)))))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :process-phones-response
  (fn
    [app-state [_ response]]
