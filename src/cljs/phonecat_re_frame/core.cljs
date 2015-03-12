@@ -59,7 +59,7 @@
        (for [phone (filter (partial matches-query? @search-input) @phones)]
          ^{:key phone} [phone-component phone])])))
 
-(defn search
+(defn search-component
   []
   (let [search-input (re-frame/subscribe [:search-input])])
   (fn []
@@ -69,7 +69,7 @@
   [:div {:class "container-fluid"}
    [:div {:class "row"}
     [:div {:class "col-md-2"}
-     [search]]]
+     [search-component]]]
    [:div {:class "col-md-10"}
     [phones-component]]])
 
