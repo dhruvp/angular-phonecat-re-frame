@@ -4,6 +4,13 @@
 
 A lot of this work was done referencing vvvvvalvalval's excellent Reagent port of the Angular Phonecat Tutorial [here] (https://github.com/vvvvalvalval/reagent-phonecat). Additionally, Mike Thompson's excellent [writeup](https://github.com/Day8/re-frame) on Re-Frame was consulted extensively. Finally, I based the actual tutorial on the official Angular Phonecat tutorial [here] (https://docs.angularjs.org/tutorial).
 
+
+# Writeup #
+
+## Introduction ##
+
+Below, I'm going to walk you through the port of the Angular Phonecat tutorial in <a href="https://github.com/Day8/re-frame" target="_blank">Re-frame</a> - a very simple, yet expressive, library for architecting Single Page Apps in Clojurescript. Rather than discuss what Re-frame is and why use it, I'll let Mike Thompson's excellent [writeup](https://github.com/Day8/re-frame) on the project do the talking. Finished reading it? Okay let's get into building an app with re-frame! We're going to go step by step and mirror the exact steps taken in the official angular [walkthrough](https://docs.angularjs.org/tutorial). As a result, you'll be able to compare each step against its analog in Angular and get a better feel of how these frameworks are different and what their strengths and weaknesses are.
+
 ## Setup ##
 
 Run lein ring server followed by lein figwheel in the directory to see the page.
@@ -26,12 +33,6 @@ The relevant code is in src/cljs/phonecat_re_frame/core.cljs
 * Step 9 and Step 8: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-8...step-9" target="_blank"> Diff </a>
 * Step 10 and Step 9: <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-9...step-10" target="_blank"> Diff </a>
 
-
-# Writeup #
-
-## Introduction ##
-
-Below, I'm going to walk you through the port of the Angular Phonecat tutorial in <a href="https://github.com/Day8/re-frame" target="_blank">Re-frame</a> - a very simple, yet expressive, library for architecting Single Page Apps in Clojurescript. Rather than discuss why use such a framework, I'll let Mike's excellent [writeup](https://github.com/Day8/re-frame) on the project do the talking. Finished reading it? Okay let's get into building an app with re-frame! We're going to go step by step and mirror the exact steps taken in the official angular [walkthrough](https://docs.angularjs.org/tutorial). As a result, you'll be able to compare each step against its analog in Angular and get a better feel of how these frameworks are different and what their strengths and weaknesses are.
 
 
 ## Step 0 - Setting up ##
@@ -104,7 +105,10 @@ The awesome part about this is that our HTML is now a first class data structure
 
 ## Step 2 - Using real data ##
 
-### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-1...step-2">Diff</a> ###
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-1...step-2"> Our Diff</a> ###
+
+### <a href="https://github.com/angular/angular-phonecat/compare/step-1...step-2"> Official Angular Diff</a> ###
+
 
 ### Explanation ###
 
@@ -227,6 +231,8 @@ In the above snippet we first subscribe to the phones value in our db. Then, we 
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-2...step-3" target="_blank">Diff</a> ###
 
+### <a href="https://github.com/angular/angular-phonecat/compare/step-2...step-3"> Official Angular Diff</a> ###
+
 Now let's add a little search box that allows us to search for phones and just display the ones we are interested in.
 
 #### Handlers ####
@@ -300,6 +306,9 @@ matches-query just uses a regexp to check if the search term is present in the n
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-3...step-4" target="_blank">Diff</a> ###
 
+### <a href="https://github.com/angular/angular-phonecat/compare/step-3...step-4"> Official Angular Diff</a> ###
+
+
 Step 4 is almost identical in nature to step 3. We are going to store an 'order-prop' property in our app-db and use it to sort the phones in the list. In the view layer, we simply create an order-by component that will allow users to select how they want their list to be ordered. To actually get the ordering to be used, we change this pieces of the phones-component:
 
 ```clojure
@@ -321,6 +330,8 @@ So we just subscribe to the order-property and sort our phones list by the order
 ## Step 5 - Loading the phones list via ajax ##
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-4...step-5" target="_blank">Diff</a> ###
+
+### <a href="https://github.com/angular/angular-phonecat/compare/step-4...step-5"> Official Angular Diff</a> ###
 
 Now, we are going to do away with the mock phones data and load it in via ajax. To do so, we start by dispatching a call to make the ajax request on page load:
 
@@ -369,6 +380,9 @@ Let's focus on the success response handler. We take in the response handler by 
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-5...step-6" target="_blank">Diff</a> ###
 
+### <a href="https://github.com/angular/angular-phonecat/compare/step-5...step-6"> Official Angular Diff</a> ###
+
+
 We are now going to add simple thumbnails to our phone component. In the angular version of this example, this is an introduction to ng-src so you know how to insert data into image links. For us, we don't have to worry about learning anything new! We just again use basic clojure syntax to place the data from phones.json as the src for the image. We do so below:
 
 ```clojure
@@ -387,6 +401,8 @@ This again may not seem like a big deal but it's an example of how we have to le
 ## Step 7 - Adding routing to other pages ##
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-6...step-7" target="_blank">Diff</a> ###
+
+### <a href="https://github.com/angular/angular-phonecat/compare/step-6...step-7"> Official Angular Diff</a> ###
 
 This step is a little more tricky than the others but still not too difficult. Our goal is to create a separate page for each individual phone with the url /phones/:phone-id. From a view layer perspective, each phone page is just going to point to a new component that we render.
 
@@ -445,6 +461,8 @@ And with that we should have new pages set up!
 ## Step 8 - Filling out the Phone Detail Page ##
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-7...step-8" target="_blank">Diff</a> ###
+
+### <a href="https://github.com/angular/angular-phonecat/compare/step-7...step-8"> Official Angular Diff</a> ###
 
 Now let's make our individual phone pages actually have something useful! Like earlier, we create ajax calls to load the phone info for the resource. That code should be very familiar from Step 5. Instead, let's focus on how we achieve some cool templating using reagent in this step. If you look at the angular html, you'll notice a ton of repetition:
 
@@ -579,6 +597,9 @@ The great thing about re-frame is that calculating such materialized views is ab
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-8...step-9" target="_blank">Diff</a> ###
 
+### <a href="https://github.com/angular/angular-phonecat/compare/step-8...step-9"> Official Angular Diff</a> ###
+
+
 This step is again an example of how re-frame has very little incidental complexity. In the Angular example, the goal here is to create a filter that converts a boolean into a checkmark as follows:
 
 ```javascript
@@ -603,6 +624,9 @@ This logic does the following. It checks the value of the attribute - if it's tr
 ## Step 10 - Updating the thumbnail on click ##
 
 ### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-9...step-10" target="_blank">Diff</a> ###
+
+### <a href="https://github.com/angular/angular-phonecat/compare/step-9...step-10"> Official Angular Diff</a> ###
+
 
 In this final step, we are going to update the main thumbnail displayed in the phone page based on what thumbnail the user clicks on. This is again a simple application of the re-frame dispatch, handler, subscribe cycle that we are now used to.
 
