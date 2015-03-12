@@ -320,6 +320,8 @@ So we just subscribe to the order-property and sort our phones list by the order
 
 ## Step 5 - Loading the phones list via ajax ##
 
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-4...step-5" target="_blank">Diff</a> ###
+
 Now, we are going to do away with the mock phones data and load it in via ajax. To do so, we start by dispatching a call to make the ajax request on page load:
 
 ```clojure
@@ -365,6 +367,8 @@ Let's focus on the success response handler. We take in the response handler by 
 
 ## Step 6 - Adding thumbnails ##
 
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-5...step-6" target="_blank">Diff</a> ###
+
 We are now going to add simple thumbnails to our phone component. In the angular version of this example, this is an introduction to ng-src so you know how to insert data into image links. For us, we don't have to worry about learning anything new! We just again use basic clojure syntax to place the data from phones.json as the src for the image. We do so below:
 
 ```clojure
@@ -381,6 +385,8 @@ We are now going to add simple thumbnails to our phone component. In the angular
 This again may not seem like a big deal but it's an example of how we have to learn far fewer things to get up and running with this framework. The incidental complexity is minimal.
 
 ## Step 7 - Adding routing to other pages ##
+
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-6...step-7" target="_blank">Diff</a> ###
 
 This step is a little more tricky than the others but still not too difficult. Our goal is to create a separate page for each individual phone with the url /phones/:phone-id. From a view layer perspective, each phone page is just going to point to a new component that we render.
 
@@ -437,6 +443,8 @@ This tells secretary to load up the route referring to resource. More interestin
 And with that we should have new pages set up!
 
 ## Step 8 - Filling out the Phone Detail Page ##
+
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-7...step-8" target="_blank">Diff</a> ###
 
 Now let's make our individual phone pages actually have something useful! Like earlier, we create ajax calls to load the phone info for the resource. That code should be very familiar from Step 5. Instead, let's focus on how we achieve some cool templating using reagent in this step. If you look at the angular html, you'll notice a ton of repetition:
 
@@ -568,6 +576,9 @@ The great thing about re-frame is that calculating such materialized views is ab
 
 
 ## Step 9 - Adding in checkmarks instead of booleans ##
+
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-8...step-9" target="_blank">Diff</a> ###
+
 This step is again an example of how re-frame has very little incidental complexity. In the Angular example, the goal here is to create a filter that converts a boolean into a checkmark as follows:
 
 ```javascript
@@ -590,6 +601,9 @@ In our setup, we don't have to deal with any new concepts just to apply some boo
 This logic does the following. It checks the value of the attribute - if it's true, it display the checkmark '\u2713', if it's false it display a cross '\u2718'. Otherwise, it just displays the value as it is. While this isn't especially less verbose I like how I don't have to learn any new ideas to implement it - just Clojure!
 
 ## Step 10 - Updating the thumbnail on click ##
+
+### <a href="https://github.com/dhruvp/angular-phonecat-re-frame/compare/step-9...step-10" target="_blank">Diff</a> ###
+
 In this final step, we are going to update the main thumbnail displayed in the phone page based on what thumbnail the user clicks on. This is again a simple application of the re-frame dispatch, handler, subscribe cycle that we are now used to.
 
 ### Dispatch ###
