@@ -34,6 +34,11 @@
    (reaction (:order-prop @db))))
 
 (re-frame/register-sub
+ :phone-details
+ (fn [db]
+   (reaction (:phone-details @db))))
+
+(re-frame/register-sub
  :phone-query
  (fn [db [_ phone-id]]
    (let [phone-details-reaction (reaction (:phone-details @db))]
@@ -94,6 +99,7 @@
  (fn
    [_ _]                   ;; Ignore both params (db and v).
    {:phones []
+    :phone-details {}
     :search-input ""
     :order-prop "name"}))
 
