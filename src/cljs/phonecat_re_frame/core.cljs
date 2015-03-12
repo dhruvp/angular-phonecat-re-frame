@@ -33,7 +33,7 @@
  (fn [db]
    (reaction (:order-prop @db))))
 
-(re-frame/register-subs
+(re-frame/register-sub
  :phone-query
  (fn [db [_ phone-id]]
    (let [phone-details-reaction (reaction (:phone-details @db))]
@@ -62,14 +62,14 @@
                    :keywords? true})
    app-state))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :process-phone-detail-response
  (fn
    ;; store info for the specific phone-id in the db
    [app-state [_ phone-id response]]
    (assoc-in app-state [:phone-details (keyword phone-id)] response)))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :process-phone-detail-bad-response
  (fn
    [app-state [_ [phone-id response]]]
@@ -77,7 +77,7 @@
    (println response)
    app-state))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :load-phone-detail
  (fn
    ;; fetch information for the phone with the given phone-id
