@@ -14,9 +14,9 @@
 ;; Re-frame data
 
 (re-frame/register-sub        ;; a new subscription handler
-   :phones             ;; usage (subscribe [:phones])
-   (fn [db]
-     (reaction (:phones @db))))  ;; pulls out :phones
+ :phones             ;; usage (subscribe [:phones])
+ (fn [db]
+   (reaction (:phones @db))))  ;; pulls out :phones
 
 (re-frame/register-sub
  :search-input
