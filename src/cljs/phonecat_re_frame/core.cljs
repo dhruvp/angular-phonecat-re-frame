@@ -39,7 +39,8 @@
    {:phones [{:name "Nexus S" :snippet "Fast just got faster with Nexus S."}
              {:name "Motorola XOOM™ with Wi-Fi" :snippet "The Next, Next Generation tablet."}
              {:name "Motoral Xoom" :snippet "The Next, Next Generation tablet."}]
-    :search-input ""}))
+    :search-input ""
+    :order-prop "name"}))
 
 (defn handle-search-input-entered
   [app-state [_ search-input]]
@@ -78,9 +79,9 @@
 (defn phones-component
   []
   (let [phones (re-frame/subscribe [:phones])
-        search-input (re-frame/subscribe [:search-input])]
+        search-input (re-frame/subscribe [:search-input])
+        order-prop (re-frame/subscribe [:order-prop])]
     (fn []
-
       [:ul {:class= "phones"}
        (for [phone (->> @phones
                         (filter (partial matches-query? @search-input))
