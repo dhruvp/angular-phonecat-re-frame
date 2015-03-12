@@ -136,7 +136,6 @@
         [:option (mark-selected {:value "age"} @order-prop "age") "Newest"]]])))
 
 (defn home-page []
-  [phones-component])
   [:div {:class "container-fluid"}
    [:div {:class "row"}
     [:div {:class "col-md-2"}
