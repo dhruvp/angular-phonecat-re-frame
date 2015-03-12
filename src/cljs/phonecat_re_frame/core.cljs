@@ -12,10 +12,15 @@
 ;; -------------------------
 ;; Re-frame data
 
+(re-frame/register-sub
+  :search-input
+  (fn [db]
+    (reaction (:search-input @db))))
+
 (re-frame/register-sub        ;; a new subscription handler
-   :phones             ;; usage (subscribe [:phones])
-   (fn [db]
-     (reaction (:phones @db))))  ;; pulls out :phones
+ :phones             ;; usage (subscribe [:phones])
+ (fn [db]
+   (reaction (:phones @db))))  ;; pulls out :phones
 
 (re-frame/register-handler
  :initialise-db             ;; usage: (dispatch [:initialise-db])
@@ -30,7 +35,7 @@
   [app-state [_ search-input]]
   (assoc-in app-state [:search-input] search-input))
 
-(re-frame/register-pure-handler
+(re-frame/register-handler
  :search-input-entered
  handle-search-input-entered)
 ;; -------------------------
