@@ -92,12 +92,12 @@ This translates into the following html:
 ```html
 <ul>
   <li>
-    <span>"Nexus S"</span>
-    <p>"Fast just got faster with the Nexus S."</p>
+    <span>Nexus S</span>
+    <p>Fast just got faster with the Nexus S.</p>
   </li>
   <li>
-    <span>"Motorola XOOM with Wi-Fi"</span>
-    <p>"The Next, Next Generation tablet."</p>
+    <span>Motorola XOOM with Wi-Fi</span>
+    <p>The Next, Next Generation tablet.</p>
   </li>
 </ul>
 ```
