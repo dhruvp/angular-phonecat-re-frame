@@ -1,4 +1,4 @@
-# Draft of the angular-phonecat tutorial in re-frame #
+# Angular-phonecat tutorial in re-frame #
 
 ## Sources ##
 
